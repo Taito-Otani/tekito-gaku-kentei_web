@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f0e6" />
+  <meta name="description" content="全部ちゃんとやるのではなく、ちゃんとやる場所を選べるか。日本テキトー学検定。" />
+  <title>日本テキトー学検定</title>
+  <style>
+    :root{
+      --paper:#f5f0e6;--ink:#171717;--muted:#6a665e;--red:#a83428;--line:#b9b1a3;
+      --card:#fffdf8;--soft:#e9e1d3;--green:#2d6047;--shadow:0 14px 34px rgba(35,27,14,.10);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:
+      radial-gradient(circle at 15% 5%,rgba(168,52,40,.06),transparent 28rem),
+      linear-gradient(180deg,#f8f4ec 0%,var(--paper) 100%);
+      color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+      min-height:100vh}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .wrap{width:min(920px,calc(100% - 28px));margin:0 auto;padding:22px 0 72px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:10px 0 22px;gap:16px}
+    .brand{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-weight:700;letter-spacing:.08em}
+    .seal{width:46px;height:46px;border:2px solid var(--red);border-radius:50%;color:var(--red);display:grid;place-items:center;font:700 11px/1.15 serif;transform:rotate(-8deg);flex:0 0 auto}
+    .hero{border-top:4px double var(--ink);border-bottom:1px solid var(--ink);padding:56px 4px 42px;text-align:center}
+    .kicker{font-size:12px;letter-spacing:.22em;color:var(--red);font-weight:700;margin-bottom:16px}
+    h1{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:clamp(38px,8vw,76px);line-height:1.02;margin:0;letter-spacing:.04em}
+    .subtitle{max-width:690px;margin:22px auto 0;font-size:clamp(17px,3vw,22px);line-height:1.8;font-weight:600}
+    .lead{max-width:680px;margin:20px auto 0;color:var(--muted);line-height:1.9;font-size:14px}
+    .cta{margin-top:30px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+    .btn{border:1px solid var(--ink);background:var(--ink);color:white;border-radius:999px;padding:14px 24px;font-weight:700;letter-spacing:.04em;min-height:48px}
+    .btn.secondary{background:transparent;color:var(--ink)}
+    .btn.red{background:var(--red);border-color:var(--red)}
+    .btn:disabled{opacity:.4;cursor:not-allowed}
+    .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:28px 0 0}
+    .fact{background:var(--card);padding:18px 10px;text-align:center}
+    .fact b{display:block;font-family:serif;font-size:24px;margin-bottom:5px}
+    .fact span{font-size:11px;color:var(--muted);letter-spacing:.08em}
+    section.panel{display:none;margin-top:34px}
+    section.panel.active{display:block}
+    .exam-top{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:16px}
+    .progress-label{font-size:13px;color:var(--muted)}
+    .progress{height:7px;background:var(--soft);border-radius:99px;overflow:hidden}
+    .progress>div{height:100%;background:var(--red);width:0;transition:width .25s}
+    .question-card{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);padding:clamp(22px,5vw,42px);margin-top:22px}
+    .category{display:inline-flex;padding:6px 10px;border:1px solid var(--line);border-radius:99px;font-size:11px;letter-spacing:.12em;color:var(--muted)}
+    .qno{font:700 13px serif;color:var(--red);margin-top:20px}
+    .question{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;font-size:clamp(22px,5vw,32px);line-height:1.55;margin:9px 0 8px}
+    .prompt{font-weight:700;margin:0 0 20px}
+    .choices{display:grid;gap:10px}
+    .choice{width:100%;text-align:left;border:1px solid var(--line);background:#fff;padding:16px 17px;border-radius:10px;line-height:1.55;transition:.15s}
+    .choice:hover{border-color:var(--ink);transform:translateY(-1px)}
+    .choice.selected{border:2px solid var(--red);background:#fff7f3;padding:15px 16px}
+    .nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+    .result-head{text-align:center;padding:20px 0 10px}
+    .grade{font:700 clamp(64px,16vw,116px)/1 serif;color:var(--red);margin:12px 0}
+    .title{font:700 clamp(20px,5vw,32px)/1.5 "Yu Mincho",serif}
+    .index-score{font-size:13px;color:var(--muted);margin-top:12px}
+    .index-score strong{font-size:32px;color:var(--ink);margin:0 4px}
+    .axis-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:28px 0}
+    .axis{background:var(--card);border:1px solid var(--line);padding:18px}
+    .axis b{display:block;font-size:13px;margin-bottom:8px}
+    .axis .n{font:700 32px serif}
+    .meter{height:5px;background:var(--soft);margin-top:10px;overflow:hidden}
+    .meter i{display:block;height:100%;background:var(--green)}
+    .result-copy{background:var(--card);border-left:4px solid var(--red);padding:18px 20px;line-height:1.85}
+    .name-box{margin:26px 0;padding:18px;background:rgba(255,255,255,.55);border:1px dashed var(--line)}
+    .name-box label{font-size:12px;font-weight:700;display:block;margin-bottom:8px}
+    .name-box input{width:100%;border:1px solid var(--line);background:white;border-radius:8px;padding:13px}
+    .certificate{background:#fffdf7;border:1px solid #8b8171;outline:4px double #8b8171;outline-offset:-10px;padding:42px clamp(24px,7vw,64px);margin:38px 4px;position:relative;text-align:center}
+    .certificate:before{content:"日本テキトー学研究所";position:absolute;top:20px;left:28px;font-size:10px;letter-spacing:.16em;color:#6c6254}
+    .cert-kicker{font-size:11px;letter-spacing:.28em;margin-bottom:10px}
+    .cert-title{font:700 clamp(30px,7vw,52px)/1.2 "Yu Mincho",serif;letter-spacing:.08em}
+    .cert-name{font:700 clamp(20px,5vw,30px)/1.4 "Yu Mincho",serif;border-bottom:1px solid var(--ink);display:inline-block;min-width:55%;padding:28px 12px 6px}
+    .cert-grade{font:700 clamp(40px,10vw,66px)/1 serif;color:var(--red);margin:22px 0 8px}
+    .cert-desc{line-height:1.9;font-family:"Yu Mincho",serif}
+    .cert-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin:24px 0 0}
+    .cert-meta div{background:#fffdf7;padding:12px 6px;font-size:11px}
+    .cert-meta b{display:block;font-size:16px;margin-top:4px}
+    .stamp{width:70px;height:70px;border:3px double var(--red);color:var(--red);border-radius:50%;display:grid;place-items:center;font:700 13px/1.2 serif;position:absolute;right:28px;bottom:28px;transform:rotate(-10deg)}
+    .actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+    .ranking{margin-top:42px;border-top:1px solid var(--ink);padding-top:24px}
+    .ranking h2{font-family:"Yu Mincho",serif;margin:0 0 6px}
+    .ranking-note{font-size:12px;color:var(--muted)}
+    table{border-collapse:collapse;width:100%;margin-top:16px;background:var(--card)}
+    th,td{padding:12px 10px;border-bottom:1px solid var(--soft);text-align:left;font-size:13px}
+    th{font-size:11px;color:var(--muted);letter-spacing:.06em}
+    td.score{text-align:right;font-weight:700}
+    .about{margin-top:58px;border-top:1px solid var(--line);padding-top:28px}
+    .about h2{font-family:"Yu Mincho",serif}
+    .about p{line-height:1.9;color:#49453f}
+    footer{margin-top:60px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--muted)}
+    .hidden{display:none!important}
+    @media(max-width:640px){
+      .wrap{width:min(100% - 22px,920px)}
+      header{padding-top:5px}
+      .hero{padding-top:36px}
+      .facts{grid-template-columns:1fr 1fr 1fr}
+      .fact{padding:14px 5px}
+      .fact b{font-size:20px}
+      .axis-grid{grid-template-columns:1fr}
+      .cert-meta{grid-template-columns:1fr}
+      .stamp{position:static;margin:22px auto 0}
+      footer{flex-direction:column}
+    }
+    @media print{
+      body{background:white}
+      header,.hero,.facts,#exam,.result-head,.axis-grid,.result-copy,.name-box,.actions,.ranking,.about,footer{display:none!important}
+      .wrap{width:100%;padding:0}
+      #result{display:block!important;margin:0}
+      .certificate{margin:12mm;box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">日本テキトー学検定</div>
+    <div class="seal">公認<br>テキトー</div>
+  </header>
+
+  <main id="home">
+    <div class="hero">
+      <div class="kicker">THE JAPAN TEKITO STUDIES EXAMINATION</div>
+      <h1>日本テキトー学検定</h1>
+      <p class="subtitle">全部ちゃんとやるのではなく、<br>ちゃんとやる場所を選べるか。</p>
+      <p class="lead">この検定は知識を問うものではありません。日常の15の場面から、精密さが必要な場所と「まあ、これくらいでいい」を選び分ける力を測ります。</p>
+      <div class="cta"><button class="btn red" id="startBtn">受験をはじめる</button></div>
+    </div>
+    <div class="facts">
+      <div class="fact"><b>15</b><span>設問数</span></div>
+      <div class="fact"><b>3</b><span>評価軸</span></div>
+      <div class="fact"><b>6</b><span>認定級</span></div>
+    </div>
+    <div class="about">
+      <h2>テキトー学とは</h2>
+      <p>「適当」は、雑にやることではありません。必要な精度、時間、責任の重さを見極めて、ちょうどよい力を配分すること。本検定では、その判断を〈判断力・柔軟力・責任力〉の3つの観点から見ます。</p>
+    </div>
+  </main>
+
+  <section id="exam" class="panel">
+    <div class="exam-top">
+      <div><b>日本テキトー学検定</b><div class="progress-label" id="progressLabel">第1問 / 15問</div></div>
+      <div class="progress-label" id="answeredLabel">回答 0 / 15</div>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="question-card">
+      <div class="category" id="category"></div>
+      <div class="qno" id="qno"></div>
+      <div class="question" id="question"></div>
+      <p class="prompt">あなたならどうする？</p>
+      <div class="choices" id="choices"></div>
+    </div>
+    <div class="nav">
+      <button class="btn secondary" id="prevBtn">戻る</button>
+      <button class="btn" id="nextBtn" disabled>次へ</button>
+    </div>
+  </section>
+
+  <section id="result" class="panel">
+    <div class="result-head">
+      <div class="kicker">認定結果</div>
+      <div class="grade" id="grade"></div>
+      <div class="title" id="resultTitle"></div>
+      <div class="index-score">テキトー指数 <strong id="indexScore">0</strong>/100</div>
+    </div>
+    <div class="axis-grid" id="axisGrid"></div>
+    <div class="result-copy" id="resultCopy"></div>
+
+    <div class="name-box">
+      <label for="nickname">受験証明書に記載する名前・ニックネーム</label>
+      <input id="nickname" maxlength="24" placeholder="例：テキトー太郎" />
+    </div>
+
+    <div class="certificate" id="certificate">
+      <div class="cert-kicker">CERTIFICATE OF TEKITO STUDIES</div>
+      <div class="cert-title">受 験 証 明 書</div>
+      <div class="cert-name" id="certName">受験者</div>
+      <div class="cert-grade" id="certGrade"></div>
+      <div class="cert-desc" id="certDesc"></div>
+      <div class="cert-meta">
+        <div>テキトー指数<b id="certScore"></b></div>
+        <div>受験日<b id="certDate"></b></div>
+        <div>認定番号<b id="certId"></b></div>
+      </div>
+      <div class="stamp">日本<br>テキトー学<br>研究所</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn red" id="saveImageBtn">証明書を画像保存</button>
+      <button class="btn secondary" id="printBtn">印刷 / PDF保存</button>
+      <button class="btn secondary" id="shareBtn">結果をシェア</button>
+      <button class="btn secondary" id="retryBtn">もう一度受験</button>
+    </div>
+
+    <div class="ranking">
+      <h2>この端末のランキング</h2>
+      <div class="ranking-note">GitHub Pagesの静的版では、ランキングはこのブラウザ内に保存されます。</div>
+      <table>
+        <thead><tr><th>順位</th><th>名前</th><th>認定</th><th>受験日</th><th style="text-align:right">指数</th></tr></thead>
+        <tbody id="rankingBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 Taito Otani / 日本テキトー学検定</span>
+    <span>「適当」は、ちょうどよいこと。</span>
+  </footer>
+</div>
+
+<script>
+const questions = [
+ {cat:"時間",axis:"judgment",q:"友人との待ち合わせ。電車が少し遅れて、到着が5分ほど遅れそう。",a:[
+  ["急いで走り、1分でも遅れを減らす",2],["「5分くらい遅れる」と一言連絡して普通に向かう",3],["5分なら誤差だと思い、何も連絡しない",1],["正確な到着時刻を秒単位で計算して長文で送る",0]]},
+ {cat:"仕事",axis:"responsibility",q:"明日の社内会議で使う資料。内容は伝わるが、細かな余白や文字位置が少し揃っていない。",a:[
+  ["徹夜して1px単位まで揃える",1],["伝達に支障がない範囲だけ整え、睡眠を優先する",3],["中身も見直さずそのまま提出する",0],["重要な数字と結論だけ再確認し、見た目は必要十分に整える",3]]},
+ {cat:"休日",axis:"flexibility",q:"休日の予定を細かく決めていたが、朝起きたら思ったより疲れている。",a:[
+  ["予定通り全部こなす",1],["予定を半分くらいにして、残りは気分で決める",3],["予定を全部捨てて一日中寝る",2],["予定表を作り直すだけで午前中を使う",0]]},
+ {cat:"買い物",axis:"judgment",q:"300円の日用品を買う。似た商品が5種類あり、性能差はほとんどない。",a:[
+  ["レビューを1時間読み込む",0],["最初に目に入った無難なものを買う",3],["全商品を表にして比較する",1],["何も考えず一番高いものを買う",1]]},
+ {cat:"チーム",axis:"responsibility",q:"共同制作で、担当者の作業が締切に間に合わなさそうだと分かった。",a:[
+  ["担当者に任せた仕事なので何もしない",0],["状況を確認し、重要部分だけ助けるか範囲を調整する",3],["全部自分で引き取る",1],["締切を守ることだけを優先し、品質を全部捨てる",1]]},
+ {cat:"旅行",axis:"flexibility",q:"旅行先で予定していた店が臨時休業だった。",a:[
+  ["旅行計画が崩れたのでかなり落ち込む",0],["近くで面白そうな店を探して入る",3],["同じ系列の店を遠くまで探しに行く",1],["昼食自体を諦める",1]]},
+ {cat:"料理",axis:"judgment",q:"料理中、レシピでは塩2.0gと書いてあるが、計量器が見つからない。",a:[
+  ["作るのをやめる",0],["小さじや指先の感覚でおおよそ合わせ、味見で調整する",3],["塩を入れない",1],["適当に大量に入れて祈る",0]]},
+ {cat:"約束",axis:"responsibility",q:"人に頼まれた作業で、自分のミスに気づいた。まだ相手は気づいていない。",a:[
+  ["バレなさそうなら黙っておく",0],["影響範囲を確認し、必要なら早めに伝えて修正する",3],["小さなミスでも大事件のように謝り続ける",1],["相手が気づくまで待つ",0]]},
+ {cat:"初対面",axis:"flexibility",q:"初対面の集まりで、会話の流れが想定と違い、自分が用意していた話題を出す機会がない。",a:[
+  ["無理に用意した話題へ戻す",1],["その場の流れに乗って、気になったことを聞く",3],["話すのを諦めてスマホを見る",0],["会話の構成を頭の中で修正し続ける",1]]},
+ {cat:"家事",axis:"judgment",q:"部屋を掃除している。来客まであと20分だが、棚の奥には少しホコリが残っている。",a:[
+  ["棚を全部出して徹底清掃する",1],["人が使う場所と目につく場所を優先して終える",3],["掃除を全部諦める",0],["ホコリがある棚だけ封鎖する",1]]},
+ {cat:"制作",axis:"responsibility",q:"作品の締切直前。新しいアイデアを思いついたが、入れると全体が壊れる可能性がある。",a:[
+  ["面白そうなので全部作り直す",1],["今回の完成を優先し、アイデアは次回用に記録する",3],["何も考えず追加する",0],["新案を検討するだけで締切を超える",0]]},
+ {cat:"トラブル",axis:"flexibility",q:"空港に着いてから、予定していた交通手段が運休していることを知った。",a:[
+  ["元の計画が復旧するまで待つ",0],["到着時間と費用を見て、代替手段をその場で決める",3],["一番高い手段を即決する",1],["旅行そのものを中止する",0]]},
+ {cat:"SNS",axis:"judgment",q:"SNSに投稿する文章を書いたが、言い回しをもっと良くできそうな気がする。",a:[
+  ["30分だけ見直し、意味が伝われば投稿する",3],["翌日まで何度も推敲する",1],["誤字も確認せず投稿する",0],["投稿そのものをやめる",1]]},
+ {cat:"お金",axis:"responsibility",q:"友人との食事。会計は一人4,020円くらいになった。",a:[
+  ["1円単位まで厳密に割り勘する",1],["関係性を見て4,000円ずつ程度に丸める",3],["計算が面倒なので全部友人に払わせる",0],["自分が全部払って後から後悔する",1]]},
+ {cat:"自由時間",axis:"flexibility",q:"何も予定がない午後。やりたいことがいくつかあるが、どれも決め手に欠ける。",a:[
+  ["最適な過ごし方を検索し続ける",0],["一つ軽く始めて、違うと思ったら変える",3],["何もしないことを積極的に選ぶ",3],["やることを決められない自分を責める",0]]}
+];
+
+const gradeMap = [
+  {min:90,grade:"特級",title:"いい塩梅の仙人",copy:"力を抜くことと、責任を引き受けることを両立できています。精度そのものではなく、状況に必要な精度を選べるタイプです。"},
+  {min:80,grade:"1級",title:"テキトー上級者",copy:"かなり良い塩梅です。重要な場面では締め、重要でない場面では流せます。"},
+  {min:70,grade:"2級",title:"余白の実務家",copy:"必要十分を見つける感覚があります。あと少し、場面ごとの優先順位を大胆に切り替えられるとさらに強くなります。"},
+  {min:60,grade:"3級",title:"ほどほど修行中",copy:"真面目さと柔軟さの間を行き来しています。何を守るべきかを先に決めると、もっと楽になります。"},
+  {min:45,grade:"4級",title:"きっちり寄りの人",copy:"丁寧さは強みですが、全部を同じ精度で扱うと疲れます。重要度に応じて力の配分を変えてみましょう。"},
+  {min:0,grade:"5級",title:"テキトー入門",copy:"まずは「全部ちゃんとやらなくていい」と知るところから。失敗しても戻せる場面では、小さく試してみましょう。"}
+];
+
+let current=0, answers=Array(questions.length).fill(null), resultData=null;
+const $=id=>document.getElementById(id);
+const home=$("home"),exam=$("exam"),result=$("result");
+
+function startExam(){
+  current=0;answers=Array(questions.length).fill(null);resultData=null;
+  home.classList.add("hidden");result.classList.remove("active");exam.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});renderQuestion();
+}
+function renderQuestion(){
+  const q=questions[current], selected=answers[current];
+  $("category").textContent=q.cat;$("qno").textContent="QUESTION "+String(current+1).padStart(2,"0");
+  $("question").textContent=q.q;
+  $("progressLabel").textContent="第"+(current+1)+"問 / "+questions.length+"問";
+  $("answeredLabel").textContent="回答 "+answers.filter(v=>v!==null).length+" / "+questions.length;
+  $("progressBar").style.width=((current)/questions.length*100)+"%";
+  $("choices").innerHTML="";
+  q.a.forEach((opt,i)=>{
+    const b=document.createElement("button");b.className="choice"+(selected===i?" selected":"");
+    b.innerHTML="<b>"+String.fromCharCode(65+i)+".</b> "+opt[0];
+    b.onclick=()=>{answers[current]=i;renderQuestion();};
+    $("choices").appendChild(b);
+  });
+  $("prevBtn").disabled=current===0;
+  $("nextBtn").disabled=answers[current]===null;
+  $("nextBtn").textContent=current===questions.length-1?"結果を見る":"次へ";
+}
+function calc(){
+  const axes={judgment:{sum:0,n:0},flexibility:{sum:0,n:0},responsibility:{sum:0,n:0}};
+  questions.forEach((q,i)=>{const s=q.a[answers[i]][1];axes[q.axis].sum+=s;axes[q.axis].n++;});
+  const axisScores={};
+  Object.keys(axes).forEach(k=>axisScores[k]=Math.round(axes[k].sum/(axes[k].n*3)*100));
+  const total=Math.round((axisScores.judgment+axisScores.flexibility+axisScores.responsibility)/3);
+  const g=gradeMap.find(x=>total>=x.min);
+  return {total,axisScores,...g};
+}
+function certificationId(){
+  const d=new Date(), y=String(d.getFullYear()).slice(-2), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+  const rnd=Math.random().toString(36).slice(2,7).toUpperCase();
+  return "TK-"+y+m+day+"-"+rnd;
+}
+function showResult(){
+  resultData={...calc(),id:certificationId(),date:new Date()};
+  exam.classList.remove("active");result.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});
+  $("grade").textContent=resultData.grade;$("resultTitle").textContent=resultData.title;$("indexScore").textContent=resultData.total;
+  $("resultCopy").textContent=resultData.copy;
+  const labels={judgment:"判断力",flexibility:"柔軟力",responsibility:"責任力"};
+  $("axisGrid").innerHTML=Object.entries(resultData.axisScores).map(([k,v])=>'<div class="axis"><b>'+labels[k]+'</b><div class="n">'+v+'</div><div class="meter"><i style="width:'+v+'%"></i></div></div>').join("");
+  $("certGrade").textContent=resultData.grade+"「"+resultData.title+"」";
+  $("certDesc").innerHTML="あなたは日本テキトー学検定において、<br>状況に応じた「ちょうどよさ」を選ぶ力を認定されました。";
+  $("certScore").textContent=resultData.total+" / 100";
+  $("certDate").textContent=resultData.date.toLocaleDateString("ja-JP");
+  $("certId").textContent=resultData.id;
+  $("nickname").value="";$("certName").textContent="受験者";
+  saveRanking("匿名",resultData);renderRanking();
+}
+function saveRanking(name,data){
+  const key="tekito-gaku-ranking-v1", arr=JSON.parse(localStorage.getItem(key)||"[]");
+  arr.push({name:name||"匿名",score:data.total,grade:data.grade,date:data.date.toISOString(),id:data.id});
+  arr.sort((a,b)=>b.score-a.score);localStorage.setItem(key,JSON.stringify(arr.slice(0,30)));
+}
+function updateLatestName(name){
+  if(!resultData)return;
+  const key="tekito-gaku-ranking-v1",arr=JSON.parse(localStorage.getItem(key)||"[]");
+  const item=arr.find(x=>x.id===resultData.id);if(item){item.name=name||"匿名";localStorage.setItem(key,JSON.stringify(arr));}
+}
+function renderRanking(){
+  const arr=JSON.parse(localStorage.getItem("tekito-gaku-ranking-v1")||"[]");
+  $("rankingBody").innerHTML=arr.length?arr.slice(0,10).map((x,i)=>'<tr><td>'+(i+1)+'</td><td>'+escapeHtml(x.name)+'</td><td>'+x.grade+'</td><td>'+new Date(x.date).toLocaleDateString("ja-JP")+'</td><td class="score">'+x.score+'</td></tr>').join(""):'<tr><td colspan="5">まだ記録がありません。</td></tr>';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function wrapText(ctx,text,x,y,maxWidth,lineHeight){
+  const chars=[...text];let line="",lines=[];
+  chars.forEach(ch=>{const test=line+ch;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=ch}else line=test});if(line)lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));return y+lines.length*lineHeight;
+}
+function saveCertificate(){
+  if(!resultData)return;
+  const c=document.createElement("canvas");c.width=1400;c.height=1000;const ctx=c.getContext("2d");
+  ctx.fillStyle="#fffdf7";ctx.fillRect(0,0,c.width,c.height);ctx.strokeStyle="#51493d";ctx.lineWidth=4;ctx.strokeRect(35,35,1330,930);ctx.lineWidth=1;ctx.strokeRect(48,48,1304,904);
+  ctx.textAlign="center";ctx.fillStyle="#171717";ctx.font="24px serif";ctx.fillText("CERTIFICATE OF TEKITO STUDIES",700,120);
+  ctx.font="bold 64px serif";ctx.fillText("受 験 証 明 書",700,210);
+  ctx.font="bold 42px serif";ctx.fillText(($("nickname").value.trim()||"受験者")+" 殿",700,320);
+  ctx.strokeStyle="#171717";ctx.beginPath();ctx.moveTo(390,340);ctx.lineTo(1010,340);ctx.stroke();
+  ctx.fillStyle="#a83428";ctx.font="bold 86px serif";ctx.fillText(resultData.grade,700,470);
+  ctx.font="bold 40px serif";ctx.fillText("「"+resultData.title+"」",700,530);
+  ctx.fillStyle="#171717";ctx.font="30px serif";
+  wrapText(ctx,"あなたは日本テキトー学検定において、状況に応じた「ちょうどよさ」を選ぶ力を認定されました。",700,620,980,46);
+  ctx.font="26px sans-serif";ctx.fillText("テキトー指数 "+resultData.total+" / 100",700,735);
+  ctx.font="22px sans-serif";ctx.fillText("受験日 "+resultData.date.toLocaleDateString("ja-JP")+"　｜　認定番号 "+resultData.id,700,795);
+  ctx.fillStyle="#a83428";ctx.beginPath();ctx.arc(1160,820,72,0,Math.PI*2);ctx.strokeStyle="#a83428";ctx.lineWidth=5;ctx.stroke();ctx.font="bold 22px serif";ctx.fillText("日本テキトー学",1160,812);ctx.fillText("研究所",1160,844);
+  const a=document.createElement("a");a.href=c.toDataURL("image/png");a.download="tekito-gaku-certificate.png";a.click();
+}
+function shareResult(){
+  if(!resultData)return;
+  const text="日本テキトー学検定で「"+resultData.grade+" "+resultData.title+"」でした。テキトー指数 "+resultData.total+"/100。\n全部ちゃんとやるのではなく、ちゃんとやる場所を選べるか。";
+  if(navigator.share)navigator.share({title:"日本テキトー学検定",text,url:location.href}).catch(()=>{});
+  else navigator.clipboard.writeText(text+"\n"+location.href).then(()=>alert("結果をコピーしました"));
+}
+
+$("startBtn").onclick=startExam;
+$("prevBtn").onclick=()=>{if(current>0){current--;renderQuestion()}};
+$("nextBtn").onclick=()=>{if(answers[current]===null)return;if(current<questions.length-1){current++;renderQuestion()}else showResult()};
+$("nickname").addEventListener("input",e=>{const n=e.target.value.trim()||"受験者";$("certName").textContent=n;updateLatestName(e.target.value.trim());renderRanking();});
+$("saveImageBtn").onclick=saveCertificate;$("printBtn").onclick=()=>window.print();$("shareBtn").onclick=shareResult;$("retryBtn").onclick=startExam;
+renderRanking();
+</script>
+</body>
+</html>
